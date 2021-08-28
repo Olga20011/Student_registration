@@ -1,11 +1,13 @@
-package com.example.registration_two
+package com.example.registration_two.UI
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import com.example.registration_two.API.ApiClient
 import com.example.registration_two.API.Api_interface
+import com.example.registration_two.View_model.Login_view_model
 import com.example.registration_two.databinding.ActivityLoginBinding
 import com.example.registration_two.models.LoginRequest
 import com.example.registration_two.models.RegistrationResponse
@@ -15,6 +17,7 @@ import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
+    val LoginViewModel=Login_view_model by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityLoginBinding.inflate(layoutInflater)
@@ -36,34 +39,11 @@ class LoginActivity : AppCompatActivity() {
             }
             if(! error){
                 binding.pbLogin.visibility=View.VISIBLE
-                var regRegister=LoginRequest(
+                var LoginRegister=LoginRequest(
                     email =email,
                     password =password
                 )
-                var retrofit=ApiClient.buildApiClient(Api_interface::class.java)
-                var request=retrofit.loginStudent(regRegister)
-                request.enqueue(object : Callback<RegistrationResponse?> {
-                    override fun onResponse(
-                        call: Call<RegistrationResponse?>,
-                        response: Response<RegistrationResponse?>
-                    ) {
-                        binding.pbLogin.visibility= View.VISIBLE
-                        if (response.isSuccessful){
-                            Toast.makeText(baseContext, "Login is successful", Toast.LENGTH_LONG).show()
-                        }
-                        else{
-                            Toast.makeText(baseContext, response.errorBody()?.string(), Toast.LENGTH_LONG).show()
-                        }
 
-                    }
-
-                    override fun onFailure(call: Call<RegistrationResponse?>, t: Throwable) {
-                        binding.pbLogin.visibility=View.GONE
-                        Toast.makeText(baseContext, t.message, Toast.LENGTH_LONG).show()
-                    }
-
-
-                })
             }
         }
     }

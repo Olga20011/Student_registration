@@ -1,4 +1,4 @@
-package com.example.registration_two
+package com.example.registration_two.models
 
 data class Courses(
     var courseName:String,

@@ -4,14 +4,15 @@ import android.telecom.Call
 import com.example.registration_two.models.LoginRequest
 import com.example.registration_two.models.RegistrationRequest
 import com.example.registration_two.models.RegistrationResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface Api_interface {
     @POST("/student/register")
-    fun registerStudent(@Body registrationRequest: RegistrationRequest):retrofit2.Call<RegistrationResponse>
+     suspend fun registerStudent(@Body registrationRequest: RegistrationRequest):Response<RegistrationResponse>
 
     @POST("/students/login")
-    fun loginStudent(@Body registrationRequest: LoginRequest): retrofit2.Call<RegistrationResponse>
+    suspend fun loginStudent(@Body registrationRequest: LoginRequest): Response<RegistrationResponse>
 
 }

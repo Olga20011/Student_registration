@@ -1,26 +1,19 @@
-package com.example.registration_two
+package com.example.registration_two.UI
 
 import android.R
-import android.app.Activity
-import android.content.Intent
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.InputBinding
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import com.example.registration_two.API.ApiClient
-import com.example.registration_two.API.Api_interface
+import androidx.activity.viewModels
+import com.example.registration_two.View_model.User_view_model
 import com.example.registration_two.databinding.ActivityMainBinding
 import com.example.registration_two.models.RegistrationRequest
-import com.example.registration_two.models.RegistrationResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
+    val user_view_model:User_view_model by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
@@ -28,6 +21,19 @@ class MainActivity : AppCompatActivity() {
 
         setupSpinner()
         clickRegister()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        user_view_model.registrationLiveData.observe(this,{regRespone->
+            if(!regRespone.studentId.isNullOrEmpty()){
+                Toast.makeText(baseContext,"Registration is successful",Toast.LENGTH_LONG).show()
+            }
+        })
+        user_view_model.errorLiveData.observe(this,{ error->
+            Toast.makeText(baseContext,"error",Toast.LENGTH_LONG).show()
+            binding.pbRegistration.visibility=View.GONE
+        })
     }
 
     fun setupSpinner() {
@@ -81,37 +87,8 @@ class MainActivity : AppCompatActivity() {
                     password = password
 
                 )
+                user_view_model.registerStudent(regRequest)
 
-                var retrofit = ApiClient.buildApiClient(Api_interface::class.java)
-                var request = retrofit.registerStudent(regRequest)
-                request.enqueue(object : Callback<RegistrationResponse?> {
-                    override fun onResponse(
-                        call: Call<RegistrationResponse?>,
-                        response: Response<RegistrationResponse?>
-                    ) {
-                        if (response.isSuccessful) {
-                            binding.pbRegistration.visibility=View.GONE
-                            Toast.makeText(
-                                baseContext,
-                                "Registration successful",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        } else {
-                            Toast.makeText(
-                                baseContext,
-                                response.errorBody()?.string(),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-
-                    }
-
-                    override fun onFailure(call: Call<RegistrationResponse?>, t: Throwable) {
-                        binding.pbRegistration.visibility=View.GONE
-                        Toast.makeText(baseContext, t.message, Toast.LENGTH_LONG).show()
-
-                    }
-                })
 
             }
         }
