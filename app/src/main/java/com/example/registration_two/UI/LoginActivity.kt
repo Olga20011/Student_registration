@@ -5,24 +5,33 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import com.example.registration_two.API.ApiClient
-import com.example.registration_two.API.Api_interface
-import com.example.registration_two.View_model.Login_view_model
+import com.example.registration_two.View_model.login_view_model
 import com.example.registration_two.databinding.ActivityLoginBinding
 import com.example.registration_two.models.LoginRequest
-import com.example.registration_two.models.RegistrationResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
-    val LoginViewModel=Login_view_model by viewModels()
+    val  login_view_model: login_view_model by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        Login()
     }
+        override fun onResume() {
+            super.onResume()
+            login_view_model.loginLiveData.observe(this,{LoginRegister->
+                if(!LoginRegister.studentId.isNullOrEmpty()){
+                    Toast.makeText(baseContext,"Login is successful", Toast.LENGTH_LONG).show()
+                }
+            })
+            login_view_model.erroLiveData.observe(this,{ error->
+                Toast.makeText(baseContext,"error", Toast.LENGTH_LONG).show()
+            })
+            binding.pbLogin.visibility= View.GONE
+        }
+
     fun Login(){
         var error=false
         binding.btnLogin.setOnClickListener {
@@ -41,8 +50,9 @@ class LoginActivity : AppCompatActivity() {
                 binding.pbLogin.visibility=View.VISIBLE
                 var LoginRegister=LoginRequest(
                     email =email,
-                    password =password
+                    password =password,
                 )
+                login_view_model.loginStudent(LoginRegister)
 
             }
         }

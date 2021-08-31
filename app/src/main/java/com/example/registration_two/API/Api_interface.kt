@@ -1,7 +1,8 @@
 package com.example.registration_two.API
 
-import android.telecom.Call
+
 import com.example.registration_two.models.LoginRequest
+import com.example.registration_two.models.LoginResponse
 import com.example.registration_two.models.RegistrationRequest
 import com.example.registration_two.models.RegistrationResponse
 import retrofit2.Response
@@ -12,7 +13,7 @@ interface Api_interface {
     @POST("/student/register")
      suspend fun registerStudent(@Body registrationRequest: RegistrationRequest):Response<RegistrationResponse>
 
-    @POST("/students/login")
-    suspend fun loginStudent(@Body registrationRequest: LoginRequest): Response<RegistrationResponse>
+    @POST("/student/login")
+    suspend fun loginStudent(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
 }
