@@ -1,26 +1,32 @@
 package com.example.registration_two.UI
 
 import android.R
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.viewModels
+import com.example.registration_two.Constants
 import com.example.registration_two.View_model.User_view_model
 import com.example.registration_two.databinding.ActivityMainBinding
 import com.example.registration_two.models.RegistrationRequest
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
+    lateinit var sharedPrefs:SharedPreferences
     val user_view_model:User_view_model by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setupSpinner()
         clickRegister()
+        redirectUser()
+        sharedPrefs=getSharedPreferences(Constants.REGISTRATION_PREFS,Context.MODE_PRIVATE)
     }
 
     override fun onResume() {
@@ -96,8 +102,17 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+    fun redirectUser(){
+        var access_token=sharedPrefs.getString(Constants.ACCESS_TOKEN,Constants.EMPTY_STRING)!!
+        if (access_token.isNotEmpty()&& access_token.isNotBlank()){
+            startActivity(Intent(this,CoursesActivity::class.java))
+        }else{
+            startActivity(Intent(this,LoginActivity::class.java))
+        }
+    }
+
+
 }
-//data class Person(var name:String,var dob:String,var idno:String,var nation:String,var phone:String,var email:String)
 
 
 
